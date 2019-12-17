@@ -15,8 +15,7 @@
         "https://ua.ulearning.cn/learnCourse/*"
       ],
       "js": [
-        "jquery.min.js",
-        "insert_scripts.js"
+        "fuxk.js"
       ]
     }
   ],
