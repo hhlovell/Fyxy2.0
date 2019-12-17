@@ -99,8 +99,11 @@ function end() {
                         }
                     })
                     playList[0].onended = function() {
-                        if (listLength > 1) playList[1].play();
-                        else end();
+                        if (listLength > 1) {
+                            playList[1].play();
+                            timer['timer13'] = setTimeout(function() { quickVideo(15) }, 1500);
+                        } else end();
+
                     }
                 }, 1500);
             }, 1500);
