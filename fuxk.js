@@ -17,7 +17,7 @@
 timer = {};
 var timerinter = setInterval(function() {
     if ($('#alertModal').attr('class').indexOf('fade') == -1) {
-        Array.from($('#alertModal .modal-body')[0].children).filter(item => item.children.length != 0)[0].children[1].children[0].click();
+        Array.from($('#alertModal .modal-body'))[0].children.filter(item => item.children.length != 0)[0].children[1].children[0].click();
         console.log('点掉了继续学习');
     }
 }, 1000)
@@ -25,13 +25,12 @@ var timerinter = setInterval(function() {
 function end() {
     let btn = $('.btn-tip')[1] || $('.btn-tip')[0]
     btn.click();
-    var video_count = 0;
     // console.log('视频播放结束');
     for (let name in timer) {
         clearTimeout(timer[name])
     }
     timer['timer1'] = setTimeout(function() {
-        if ($('.mejs__overlay-button').length == 0 && $('.file-media').length == 0) {
+        if ($('video').length == 0 && $('.file-media').length == 0) {
             //没有播放按钮就是测试或者文章
             if ($('.question-type-tag').length == 0) { //文章
                 console.log('artical');
@@ -78,36 +77,65 @@ function end() {
             }
 
         } else {
-            Array.from($('.mejs__overlay-button')).forEach(item => item.click());
-            timer['timer8'] = setTimeout(function() { //等待两秒，稍安勿躁
-                Array.from($('.custom-video')).forEach(item => {
-                    if (item instanceof HTMLVideoElement) {
-                        video_count++;
-                        quickVideo(15);
-                    }
 
-                })
-                console.log('已为视频分配函数');
-                timer['timer7'] = setTimeout(function() {
-                    Array.from($('.custom-video')).forEach(item => {
-                        if (item instanceof HTMLVideoElement) {
-                            item.onended = function() {
-                                video_count--;
-                                if (video_count == 0) {
-                                    end();
-                                    return;
-                                }
+            timer['timer8'] = setTimeout(function() {
+                var playList = Array.from($('video'));
+                var curPlay = 0;
+                var listLength = playList.length;
+                console.log(playList, curPlay);
+                playList[curPlay].play();
+                timer['timer9'] = setTimeout(function() { quickVideo(15) }, 1500);
+                timer['timer11'] = setTimeout(function() {
+                    playList.forEach(video => {
+                        video.onended = function() {
+                            if (curPlay == listLength - 1) {
+                                timer['timer9'] = setTimeout(function() { end(); }, 1500);
+                                return;
+                            } else {
+                                curPlay++;
+                                playList[curPlay].play();
+                                timer['timer12'] = setTimeout(function() { quickVideo(15) }, 1500);
                             }
                         }
                     })
-                }, 0)
+                    playList[0].onended = function() {
+                        if (listLength > 1) playList[1].play();
+                        else end();
+                    }
+                }, 1500);
+            }, 1500);
 
-            }, 2000);
+
+            //     Array.from($('.mejs__overlay-button')).forEach(item => item.click());
+            //     timer['timer8'] = setTimeout(function() { //等待两秒，稍安勿躁
+            //         Array.from($('.custom-video')).forEach(item => {
+            //             if (item instanceof HTMLVideoElement) {
+            //                 quickVideo(15);
+            //             }
+
+            //         })
+            //         console.log('已为视频分配函数');
+            //         timer['timer7'] = setTimeout(function() {
+            //             Array.from($('.custom-video')).forEach(item => {
+            //                 if (item instanceof HTMLVideoElement) {
+            //                     item.onended = function() {
+            //                         if (video_count == 0) {
+            //                             end();
+            //                             return;
+            //                         }
+            //                     }
+            //                 }
+            //             })
+            //         }, 0)
+
+            //     }, 2000);
+
+            // }
 
         }
+        // , 1000)
 
-    }, 1000)
-
+    }), 1000
 } //不用担心定时器的问题，他们都在事件队列中好着呢
 
 
