@@ -23,7 +23,8 @@ var timerinter = setInterval(function() {
 }, 1000)
 
 function end() {
-    $('.btn-tip')[1].click();
+    let btn = $('.btn-tip')[1] || $('.btn-tip')[0]
+    btn.click();
     var video_count = 0;
     // console.log('视频播放结束');
     for (let name in timer) {
